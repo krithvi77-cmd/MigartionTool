@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<migration-framework>
+
+    <settings>
+        <vendor name="datadog">
+            <auth-type>api-key</auth-type>
+            <base-url>https://api.us5.datadoghq.com/api/v1</base-url>
+            <endpoint-url type="tests">synthetics/tests</endpoint-url>
+            <endpoint-url type="monitors">/monitors</endpoint-url>
+            <required-keys>
+                <key>dd_api_key</key>
+                <key>dd_app_key</key>
+            </required-keys>
+        </vendor>
+
+        <vendor name="site24x7">
+            <auth-type>oauth2</auth-type>
+            <base-url>https://www.site24x7.com/api</base-url>
+            <required-keys>
+                <key>client_id</key>
+                <key>client_secret</key>
+                <key>refresh_token</key>
+            </required-keys>
+        </vendor>
+    </settings>
+
+    <monitors action-endpoint="/monitors">
+        
+        <monitor-type name="REST_API">
+            
+            <source-filter>
+                <key>type</key>
+                <value>api</value> 
+            </source-filter>
+
+            <field target-field="display_name">
+                <source-jsonpath>$.name</source-jsonpath>
+            </field>
+
+            <field target-field="website">
+                <source-jsonpath>$.config.request.url</source-jsonpath>
+            </field>
+
+            <field target-field="http_method">
+                <source-jsonpath>$.config.request.method</source-jsonpath>
+                <default-value>GET</default-value>
+            </field>
+
+            <field target-field="check_frequency">
+                <source-jsonpath>$.options.tick_every</source-jsonpath>
+                <transform>seconds-to-minutes</transform>
+            </field>
+
+            <field target-field="location_profile_id" type="list">
+                <resolve-by>api</resolve-by>
+                <lookup-endpoint response-path="$.data">/location_profiles</lookup-endpoint>
+                <match-on>profile_name</match-on>
+                <id-field>profile_id</id-field>
+                <default-value>World wide Locations</default-value>
+            </field>
+
+            <field target-field="threshold_profile_id" type="single">
+                <resolve-by>api</resolve-by>
+                <lookup-endpoint response-path="$.data">/threshold_profiles/RESTAPI</lookup-endpoint>
+                <match-on>type</match-on>
+                <id-field>profile_id</id-field>
+                <default-value>RESTAPI</default-value>
+            </field>
+
+            <field target-field="notification_profile_id" type="list">
+                <resolve-by>api</resolve-by>
+                <lookup-endpoint response-path="$.data">/notification_profiles</lookup-endpoint>
+                <match-on>profile_name</match-on>
+                <id-field>profile_id</id-field>
+                <default-value>Datadog Migration Profile</default-value>
+            </field>
+
+            <field target-field="user_group_ids" type="list">
+                <resolve-by>api</resolve-by>
+                <lookup-endpoint response-path="$.data">/user_groups</lookup-endpoint>
+                <match-on>display_name</match-on>
+                <id-field>user_group_id</id-field>
+                <default-value>Admin Group</default-value>
+            </field>
+
+        </monitor-type>
+    </monitors>
+</migration-framework>

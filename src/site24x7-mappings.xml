@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site24x7-mappings>
+    <monitor-type name="REST_API">
+        
+        <field target-field="display_name" type="single">
+            <vendor name="datadog">
+                <source-key>monitor_name</source-key>
+            </vendor>
+        </field>
+
+        <field target-field="type" type="single">
+            <vendor name="datadog">
+                <source-key>force_rest_type</source-key>
+                <default-value>RESTAPI</default-value>
+            </vendor>
+        </field>
+
+        <field target-field="website" type="single">
+            <vendor name="datadog">
+                <source-key>monitor_url</source-key>
+            </vendor>
+        </field>
+
+        <field target-field="timeout" type="single">
+            <vendor name="datadog">
+                <source-key>monitor_timeout</source-key>
+                <default-value>30</default-value> 
+            </vendor>
+        </field>
+
+        <field target-field="http_method" type="single">
+            <vendor name="datadog">
+                <source-key>method</source-key>
+            </vendor>
+        </field>
+
+        <field target-field="check_frequency" type="single">
+            <vendor name="datadog">
+                <source-key>frequency_seconds</source-key>
+            </vendor>
+            <transform>seconds-to-minutes</transform>
+        </field>
+        
+        <field target-field="location_profile_id" type="list">
+            <resolve-by>api</resolve-by>
+            <lookup-endpoint response-path="$.data">/location_profiles</lookup-endpoint>
+            <match-on>profile_name</match-on>
+            <id-field>profile_id</id-field>
+            <default-value>World wide Locations</default-value>
+        </field>
+
+        <field target-field="threshold_profile_id" type="single">
+            <resolve-by>api</resolve-by>
+            <lookup-endpoint response-path="$.data">/threshold_profiles/RESTAPI</lookup-endpoint>
+            <match-on>type</match-on>
+            <id-field>profile_id</id-field>
+            <default-value>RESTAPI</default-value>
+        </field>
+
+        <field target-field="notification_profile_id" type="list">
+            <resolve-by>api</resolve-by>
+            <lookup-endpoint response-path="$.data">/notification_profiles</lookup-endpoint>
+            <match-on>profile_name</match-on>
+            <id-field>profile_id</id-field>
+            <default-value>Datadog Migration Profile</default-value>
+        </field>
+
+        <field target-field="user_group_ids" type="list">
+            <resolve-by>api</resolve-by>
+            <lookup-endpoint response-path="$.data">/user_groups</lookup-endpoint>
+            <match-on>display_name</match-on>
+            <id-field>user_group_id</id-field>
+            <default-value>Admin Group</default-value>
+        </field>
+
+    </monitor-type>
+</site24x7-mappings>
