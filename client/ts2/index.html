@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra Migration Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrapper">
+    
+    <header class="navbar">
+        <div class="logo">Astra<span>Migrate</span></div>
+
+        <nav class="menu">
+            <a href="#">Features</a>
+            <a href="#">Docs</a>
+            <a href="#">Monitors</a>
+            <a href="#">What is Astra?</a>
+        </nav>
+
+        <button class="login-btn">Login</button>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Start Migrating</div>
+
+            <h1>
+                Seamlessly Migrate Your <span>Monitoring</span>  
+                Between Any Platforms
+            </h1>
+
+            <p class="tagline">  
+                One powerful tool that automates all configurations.
+            </p>
+
+            <div class="hero-buttons">
+                <button class="primary-btn" id="startMigrationBtn">Start Migration</button>
+                <button class="outline-btn">View Documentation</button>
+            </div>
+        </div>
+         <div class="hero-visual">
+              
+        </div>
+    </section>
+
+    
+    <section class="features">
+        <h2>About Astra</h2>
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+                <h3>Auto Monitor Discovery</h3>
+                <p>Scan and fetch all monitors instantly using secure API keys.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Mapping</h3>
+                <p>Smartly reorganizes and maps configurations between platforms.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Preview Before Migration</h3>
+                <p>See exactly what will change — full diff, fields, and impacts.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Customizable</h3>
+                <p>Tailor the migration process to fit your specific needs and workflows.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="metrics">
+        <div class="metric">
+            <h1>12+</h1>
+            <p>Monitors Migrated Successfully</p>
+        </div>
+
+        <div class="metric">
+            <h1>4+</h1>
+            <p>Supported Monitor Types</p>
+        </div>
+
+        <div class="metric">
+            <h1>3 Minutes</h1>
+            <p>Average Migration Time</p>
+        </div>
+    </section>
+</div>
+
+<div id="migrationModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" id="closeModal">×</button>
+        
+        <div class="modal-header">
+            <h2 id="modalTitle">Site24x7 Credentials</h2>
+            <p id="modalSubtitle">Enter your Site24x7 API credentials to begin migration</p>
+        </div>
+
+        <div class="modal-body">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                <div class="progress-step active" data-step="1">
+                    <div class="progress-circle">1</div>
+                    <div class="progress-label">Site24x7</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="progress-circle">2</div>
+                    <div class="progress-label">Vendor</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="progress-circle">3</div>
+                    <div class="progress-label">Credentials</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="progress-circle">4</div>
+                    <div class="progress-label">Review</div>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <div class="progress-circle">5</div>
+                    <div class="progress-label">Migrate</div>
+                </div>
+            </div>
+
+            <div class="step-content active" id="step1">
+                <div class="form-group">
+                    <label class="form-label">Client ID</label>
+                    <input type="text" class="form-input" id="clientId" placeholder="Enter your Client ID">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Client Secret</label>
+                    <input type="password" class="form-input" id="clientSecret" placeholder="Enter your Client Secret">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Refresh Token (Read)</label>
+                    <input type="text" class="form-input" id="readRefreshToken" placeholder="Enter Read Refresh Token">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Refresh Token (Create)</label>
+                    <input type="text" class="form-input" id="createRefreshToken" placeholder="Enter Create Refresh Token">
+                </div>
+            </div>
+
+            <div class="step-content" id="step2">
+                <div class="form-group">
+                    <label class="form-label">Select Source Vendor</label>
+                    <div class="vendor-grid">
+                        <div class="vendor-card" data-vendor="datadog">
+                            <div class="vendor-name">Datadog</div>
+                            <div class="vendor-status">Available</div>
+                        </div>
+                        <div class="vendor-card disabled" data-vendor="sumologic">
+                            <div class="vendor-name">SumoLogic</div>
+                            <div class="vendor-status coming-soon">Coming Soon</div>
+                        </div>
+                        <div class="vendor-card disabled" data-vendor="custom">
+                            <div class="vendor-name">Custom Monitor</div>
+                            <div class="vendor-status coming-soon">Coming Soon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-content" id="step3">
+                <div id="datadogCredentials">
+                    <div class="form-group">
+                        <label class="form-label">Datadog API Key</label>
+                        <input type="text" class="form-input" id="datadogApiKey" placeholder="Enter your Datadog API Key">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Datadog App Key</label>
+                        <input type="text" class="form-input" id="datadogAppKey" placeholder="Enter your Datadog App Key">
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-content" id="step4">
+                <div class="monitor-table-container">
+                    <table class="monitor-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" class="monitor-checkbox" id="selectAll">
+                                </th>
+                                <th>Monitor Name</th>
+                                <th>Type</th>
+                                <th>Query</th>
+                                <th>Threshold</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monitorTableBody">
+                            <tr>
+                                <td><input type="checkbox" class="monitor-checkbox monitor-select" checked></td>
+                                <td><input type="text" class="editable-field" value="CPU Usage Alert"></td>
+                                <td><input type="text" class="editable-field" value="metric alert"></td>
+                                <td><input type="text" class="editable-field" value="avg:system.cpu{*}"></td>
+                                <td><input type="text" class="editable-field" value="80"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="monitor-checkbox monitor-select" checked></td>
+                                <td><input type="text" class="editable-field" value="Memory Alert"></td>
+                                <td><input type="text" class="editable-field" value="metric alert"></td>
+                                <td><input type="text" class="editable-field" value="avg:system.mem{*}"></td>
+                                <td><input type="text" class="editable-field" value="90"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="monitor-checkbox monitor-select"></td>
+                                <td><input type="text" class="editable-field" value="Disk Space Warning"></td>
+                                <td><input type="text" class="editable-field" value="metric alert"></td>
+                                <td><input type="text" class="editable-field" value="avg:system.disk{*}"></td>
+                                <td><input type="text" class="editable-field" value="85"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="color: #6B7280; font-size: 14px;">Select monitors to migrate and edit configuration as needed</p>
+            </div>
+
+            <div class="step-content" id="step5">
+                <div class="migration-success">
+                    <div class="success-icon">✓</div>
+                    <h3>Migration Started!</h3>
+                    <p>Your selected monitors are being migrated to Site24x7</p>
+                    <button class="btn-primary" id="finishBtn">View Migration Status</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-secondary" id="backBtn">Back</button>
+            <button class="btn-primary" id="nextBtn">Next</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>Ⓒ 2026 Astra Migrate</p>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
