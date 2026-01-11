@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra Migration Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            background: #F1F4F9;
+            font-family: "Inter", sans-serif;
+            color: #101828;
+        }
+
+        .wrapper {
+            width: 92%;
+            margin: auto;
+            max-width: 1500px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4vh 0;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #0EA5E9;
+        }
+
+        .menu a {
+            margin: 0 18px;
+            text-decoration: none;
+            font-weight: 500;
+            color: #333;
+            opacity: 0.85;
+        }
+
+        .menu a:hover {
+            opacity: 1;
+        }
+
+        .login-btn {
+            padding: 10px 22px;
+            background: black;
+            color: white;
+            border-radius: 38px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 70px;
+        }
+
+        .hero-content {
+            max-width: 50%;
+        }
+
+        .hero-badge {
+            background: white;
+            padding: 8px 18px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        
+        .hero-visual {
+            position: absolute;
+            top: 0vh;
+            right: 4vw;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect fill='%23E0F2FE' width='400' height='400'/%3E%3Cpath fill='%230EA5E9' d='M200 100 L300 200 L200 300 L100 200 Z' opacity='0.2'/%3E%3Ccircle cx='200' cy='200' r='80' fill='%230EA5E9' opacity='0.3'/%3E%3C/svg%3E");
+            width: 46vw;
+            height: 73vh;
+            z-index: -2;
+            background-repeat: no-repeat;   
+            background-size: cover; 
+        }
+        
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            color: #0EA5E9;
+        }
+
+        .tagline {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #475467;
+        }
+
+        .hero-buttons {
+            margin-top: 30px;
+        }
+
+        .primary-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+            color: white;
+            border: none;
+            border-radius: 21px;
+            font-weight: 600;
+            margin-right: 14px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(14,165,233,0.30);
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn:hover {
+            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(14,165,233,0.40);
+        }
+
+        .outline-btn {
+            padding: 14px 30px;
+            border: 2px solid #CBD2E0;
+            background: white;
+            border-radius: 33px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .outline-btn:hover {
+            border-color: #0EA5E9;
+            color: #0EA5E9;
+        }
+
+        .features {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 36px;
+            font-weight: 800;
+        }
+
+        .feature-grid {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .feature-card p {
+            color: #444;
+        }
+
+        .metrics {
+            margin-top: 90px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .metric h1 {
+            font-size: 42px;
+            font-weight: 800;
+        }
+
+        .metric p {
+            color: #6B7280;
+        }
+
+        footer {
+            background: #000;
+            margin-top: 110px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 700px;
+            margin: 40px auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 30px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .modal-header h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .modal-header p {
+            color: #6B7280;
+            font-size: 15px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #E5E7EB;
+            z-index: 0;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 16px;
+            left: 0;
+            height: 2px;
+            background: #0EA5E9;
+            z-index: 1;
+            transition: width 0.3s ease;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-circle {
+            background: #0EA5E9;
+            border-color: #0EA5E9;
+            color: white;
+        }
+
+        .progress-step.completed .progress-circle {
+            background: #10B981;
+            border-color: #10B981;
+            color: white;
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: "Inter", sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0EA5E9;
+            box-shadow: 0 0 0 3px rgba(14,165,233,0.1);
+        }
+
+        .vendor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .vendor-card {
+            padding: 20px;
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .vendor-card:hover {
+            border-color: #0EA5E9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14,165,233,0.15);
+        }
+
+        .vendor-card.selected {
+            border-color: #0EA5E9;
+            background: #F0F9FF;
+        }
+
+        .vendor-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .vendor-card.disabled:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: #E5E7EB;
+        }
+
+        .vendor-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .vendor-status {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .vendor-status.coming-soon {
+            color: #F59E0B;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            border: 2px solid #E5E7EB;
+            background: white;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #CBD2E0;
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+        }
+
+        .btn-primary:disabled {
+            background: #CBD2E0;
+            cursor: not-allowed;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #F3F4F6;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal:hover {
+            background: #E5E7EB;
+        }
+
+        .migration-success {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #10B981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+        }
+
+        .migration-success h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .migration-success p {
+            color: #6B7280;
+            margin-bottom: 30px;
+        }
+
+        /* New Monitor Card Styles */
+        .monitors-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #F9FAFB;
+            border-radius: 12px;
+        }
+
+        .select-all-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .select-all-container label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .monitor-count {
+            font-size: 14px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .monitor-count span {
+            font-weight: 700;
+            color: #0EA5E9;
+        }
+
+        .monitors-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .monitors-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .monitors-list::-webkit-scrollbar-track {
+            background: #F3F4F6;
+            border-radius: 10px;
+        }
+
+        .monitors-list::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+
+        .monitors-list::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        .monitor-card {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .monitor-card:hover {
+            border-color: #0EA5E9;
+            box-shadow: 0 4px 12px rgba(14,165,233,0.1);
+        }
+
+        .monitor-card.selected {
+            border-color: #0EA5E9;
+            background: #F0F9FF;
+        }
+
+        .monitor-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .monitor-checkbox-wrapper {
+            padding-top: 2px;
+        }
+
+        .monitor-card-title {
+            flex: 1;
+        }
+
+        .monitor-card-title input {
+            width: 100%;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+            background: transparent;
+        }
+
+        .monitor-card-title input:hover {
+            background: #F9FAFB;
+        }
+
+        .monitor-card-title input:focus {
+            outline: none;
+            border-color: #0EA5E9;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(14,165,233,0.1);
+        }
+
+        .monitor-type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #DBEAFE;
+            color: #0369A1;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .monitor-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .monitor-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .monitor-field-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6B7280;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .monitor-field input,
+        .monitor-field textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: "Inter", sans-serif;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .monitor-field textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .monitor-field input:hover,
+        .monitor-field textarea:hover {
+            border-color: #CBD5E1;
+        }
+
+        .monitor-field input:focus,
+        .monitor-field textarea:focus {
+            outline: none;
+            border-color: #0EA5E9;
+            box-shadow: 0 0 0 3px rgba(14,165,233,0.1);
+        }
+
+        .monitor-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .expand-toggle {
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            color: #0EA5E9;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .expand-toggle:hover {
+            background: #F0F9FF;
+            border-color: #0EA5E9;
+        }
+
+        .monitor-fields.collapsed .monitor-field:nth-child(n+5) {
+            display: none;
+        }
+
+        .no-monitors {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6B7280;
+        }
+
+        .no-monitors-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .no-monitors h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .monitor-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-content {
+                max-width: 100%;
+            }
+
+            .menu {
+                display: none;
+            }
+
+            .monitor-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    
+    <header class="navbar">
+        <div class="logo">Astra<span>Migrate</span></div>
+
+        <nav class="menu">
+            <a href="#">Features</a>
+            <a href="#">Docs</a>
+            <a href="#">Monitors</a>
+            <a href="#">What is Astra?</a>
+        </nav>
+
+        <button class="login-btn">Login</button>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Start Migrating</div>
+
+            <h1>
+                Seamlessly Migrate Your <span>Monitoring</span>  
+                Between Any Platforms
+            </h1>
+
+            <p class="tagline">  
+                One powerful tool that automates all configurations.
+            </p>
+
+            <div class="hero-buttons">
+                <button class="primary-btn" id="startMigrationBtn">Start Migration</button>
+                <button class="outline-btn">View Documentation</button>
+            </div>
+        </div>
+         <div class="hero-visual">
+              
+        </div>
+    </section>
+
+    
+    <section class="features">
+        <h2>About Astra</h2>
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+                <h3>Auto Monitor Discovery</h3>
+                <p>Scan and fetch all monitors instantly using secure API keys.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Mapping</h3>
+                <p>Smartly reorganizes and maps configurations between platforms.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Preview Before Migration</h3>
+                <p>See exactly what will change — full diff, fields, and impacts.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Customizable</h3>
+                <p>Tailor the migration process to fit your specific needs and workflows.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="metrics">
+        <div class="metric">
+            <h1>12+</h1>
+            <p>Monitors Migrated Successfully</p>
+        </div>
+
+        <div class="metric">
+            <h1>4+</h1>
+            <p>Supported Monitor Types</p>
+        </div>
+
+        <div class="metric">
+            <h1>3 Minutes</h1>
+            <p>Average Migration Time</p>
+        </div>
+    </section>
+</div>
+
+<div id="migrationModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" id="closeModal">×</button>
+        
+        <div class="modal-header">
+            <h2 id="modalTitle">Site24x7 Credentials</h2>
+            <p id="modalSubtitle">Enter your Site24x7 API credentials to begin migration</p>
+        </div>
+
+        <div class="modal-body">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                <div class="progress-step active" data-step="1">
+                    <div class="progress-circle">1</div>
+                    <div class="progress-label">Site24x7</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="progress-circle">2</div>
+                    <div class="progress-label">Vendor</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="progress-circle">3</div>
+                    <div class="progress-label">Credentials</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="progress-circle">4</div>
+                    <div class="progress-label">Review</div>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <div class="progress-circle">5</div>
+                    <div class="progress-label">Migrate</div>
+                </div>
+            </div>
+
+            <div class="step-content active" id="step1">
+                <div class="form-group">
+                    <label class="form-label">Client ID</label>
+                    <input type="text" class="form-input" id="clientId" placeholder="Enter your Client ID">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Client Secret</label>
+                    <input type="password" class="form-input" id="clientSecret" placeholder="Enter your Client Secret">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Refresh Token (Read)</label>
+                    <input type="text" class="form-input" id="readRefreshToken" placeholder="Enter Read Refresh Token">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Refresh Token (Create)</label>
+                    <input type="text" class="form-input" id="createRefreshToken" placeholder="Enter Create Refresh Token">
+                </div>
+            </div>
+
+            <div class="step-content" id="step2">
+                <div class="form-group">
+                    <label class="form-label">Select Source Vendor</label>
+                    <div class="vendor-grid">
+                        <div class="vendor-card" data-vendor="datadog">
+                            <div class="vendor-name">Datadog</div>
+                            <div class="vendor-status">Available</div>
+                        </div>
+                        <div class="vendor-card disabled" data-vendor="sumologic">
+                            <div class="vendor-name">SumoLogic</div>
+                            <div class="vendor-status coming-soon">Coming Soon</div>
+                        </div>
+                        <div class="vendor-card disabled" data-vendor="custom">
+                            <div class="vendor-name">Custom Monitor</div>
+                            <div class="vendor-status coming-soon">Coming Soon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-content" id="step3">
+                <div id="datadogCredentials">
+                    <div class="form-group">
+                        <label class="form-label">Datadog API Key</label>
+                        <input type="text" class="form-input" id="datadogApiKey" placeholder="Enter your Datadog API Key">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Datadog App Key</label>
+                        <input type="text" class="form-input" id="datadogAppKey" placeholder="Enter your Datadog App Key">
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-content" id="step4">
+                <div class="monitors-header">
+                    <div class="select-all-container">
+                        <input type="checkbox" class="monitor-checkbox" id="selectAll">
+                        <label for="selectAll">Select All Monitors</label>
+                    </div>
+                    <div class="monitor-count">
+                        <span id="selectedCount">0</span> of <span id="totalCount">0</span> selected
+                    </div>
+                </div>
+
+                <div class="monitors-list" id="monitorsList">
+                    <!-- Monitors will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <div class="step-content" id="step5">
+                <div class="migration-success">
+                    <div class="success-icon">✓</div>
+                    <h3>Migration Started!</h3>
+                    <p>Your selected monitors are being migrated to Site24x7</p>
+                    <button class="btn-primary" id="finishBtn">View Migration Status</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-secondary" id="backBtn">Back</button>
+            <button class="btn-primary" id="nextBtn">Next</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 Astra Migrate</p>
+</footer>
+
+<script>
+    let currentStep = 1;
+    let selectedVendor = null;
+    let monitors = []; // Store monitor data
+
+    const modal = document.getElementById('migrationModal');
+    const startBtn = document.getElementById('startMigrationBtn');
+    const closeBtn = document.getElementById('closeModal');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const finishBtn = document.getElementById('finishBtn');
+    const selectAllCheckbox = document.getElementById('selectAll');
+
+    startBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+        currentStep = 1;
+        updateStepDisplay();
+    });
+
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
+
+    document.querySelectorAll('.vendor-card:not(.disabled)').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.vendor-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedVendor = card.dataset.vendor;
+        });
+    });
+
+    selectAllCheckbox.addEventListener('change', (e) => {
+        document.querySelectorAll('.monitor-select').forEach(checkbox => {
+            checkbox.checked = e.target.checked;
+            const card = checkbox.closest('.monitor-card');
+            if (card) {
+                if (e.target.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            }
+        });
+        updateMonitorCount();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (validateStep(currentStep)) {
+            if (currentStep < 5) {
+                currentStep++;
+                updateStepDisplay();
+            }
+            
+            if (currentStep === 5) {
+                console.log('Starting migration...');
+            }
+        }
+    });
+
+    backBtn.addEventListener('click', () => {
+        if (currentStep > 1) {
+            currentStep--;
+            updateStepDisplay();
+        }
+    });
+
+    finishBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        currentStep = 1;
+        updateStepDisplay();
+    });
+
+    function validateStep(step) {
+        switch(step) {
+            case 1:
+                const clientId = document.getElementById('clientId').value;
+                const clientSecret = document.getElementById('clientSecret').value;
+                const readToken = document.getElementById('readRefreshToken').value;
+                const createToken = document.getElementById('createRefreshToken').value;
+                
+                if (!clientId || !clientSecret || !readToken || !createToken) {
+                    alert('Please fill all Site24x7 credentials');
+                    return false;
+                }
+                return true;
+                
+            case 2:
+                if (!selectedVendor) {
+                    alert('Please select a vendor');
+                    return false;
+                }
+                return true;
+                
+            case 3:
+                const apiKey = document.getElementById('datadogApiKey').value;
+                const appKey = document.getElementById('datadogAppKey').value;
+                
+                if (!apiKey || !appKey) {
+                    alert('Please fill all vendor credentials');
+                    return false;
+                }
+                
+                console.log('Fetching monitors from', selectedVendor);
+                // Simulate fetching monitors - in real app, this would be an API call
+                loadSampleMonitors();
+                return true;
+                
+            case 4:
+                const selectedMonitors = document.querySelectorAll('.monitor-select:checked');
+                if (selectedMonitors.length === 0) {
+                    alert('Please select at least one monitor to migrate');
+                    return false;
+                }
+                
+                const monitorData = [];
+                selectedMonitors.forEach(checkbox => {
+                    const card = checkbox.closest('.monitor-card');
+                    const monitorId = card.dataset.monitorId;
+                    const monitor = monitors.find(m => m.id === monitorId);
+                    
+                    if (monitor) {
+                        const updatedMonitor = { ...monitor };
+                        card.querySelectorAll('.monitor-field input, .monitor-field textarea').forEach(field => {
+                            const fieldName = field.dataset.field;
+                            updatedMonitor[fieldName] = field.value;
+                        });
+                        monitorData.push(updatedMonitor);
+                    }
+                });
+                
+                console.log('Monitors to migrate:', monitorData);
+                return true;
+                
+            default:
+                return true;
+        }
+    }
+
+    function loadSampleMonitors() {
+        // Sample monitor data - in production, this would come from API
+        monitors = [
+            {
+                id: 'mon_1',
+                name: 'CPU Usage Alert',
+                type: 'metric alert',
+                query: 'avg(last_5m):avg:system.cpu.user{*} by {host}',
+                threshold: '80',
+                warningThreshold: '70',
+                message: 'CPU usage is high on {{host.name}}',
+                tags: 'env:production, team:platform',
+                evaluationWindow: '5m',
+                notifyNoData: 'true',
+                renotifyInterval: '60',
+                escalationMessage: 'CPU still high after 1 hour',
+                priority: 'P2'
+            },
+            {
+                id: 'mon_2',
+                name: 'Memory Usage Critical',
+                type: 'metric alert',
+                query: 'avg(last_10m):avg:system.mem.used{*} / avg:system.mem.total{*}',
+                threshold: '90',
+                warningThreshold: '80',
+                message: 'Memory usage critical on {{host.name}}',
+                tags: 'env:production, team:platform',
+                evaluationWindow: '10m',
+                notifyNoData: 'false',
+                renotifyInterval: '30',
+                escalationMessage: 'Memory issue persists',
+                priority: 'P1'
+            },
+            {
+                id: 'mon_3',
+                name: 'Disk Space Warning',
+                type: 'metric alert',
+                query: 'avg(last_15m):avg:system.disk.used{*} / avg:system.disk.total{*}',
+                threshold: '85',
+                warningThreshold: '75',
+                message: 'Disk space running low on {{host.name}}',
+                tags: 'env:production, team:infrastructure',
+                evaluationWindow: '15m',
+                notifyNoData: 'true',
+                renotifyInterval: '120',
+                escalationMessage: 'Disk space critical',
+                priority: 'P3'
+            },
+            {
+                id: 'mon_4',
+                name: 'API Response Time',
+                type: 'apm alert',
+                query: 'avg(last_5m):avg:trace.web.request.duration{service:api}',
+                threshold: '500',
+                warningThreshold: '300',
+                message: 'API response time is degraded',
+                tags: 'env:production, team:backend, service:api',
+                evaluationWindow: '5m',
+                notifyNoData: 'true',
+                renotifyInterval: '15',
+                escalationMessage: 'API performance still degraded',
+                priority: 'P1'
+            },
+            {
+                id: 'mon_5',
+                name: 'Error Rate Anomaly',
+                type: 'anomaly alert',
+                query: 'avg(last_1h):anomalies(avg:trace.web.request.errors{*}, "basic", 2)',
+                threshold: '10',
+                warningThreshold: '5',
+                message: 'Unusual error rate detected',
+                tags: 'env:production, team:backend',
+                evaluationWindow: '1h',
+                notifyNoData: 'false',
+                renotifyInterval: '60',
+                escalationMessage: 'Error rate anomaly continues',
+                priority: 'P2',
+                seasonality: 'weekly'
+            },
+            {
+                id: 'mon_6',
+                name: 'Database Connection Pool',
+                type: 'metric alert',
+                query: 'avg(last_5m):avg:postgresql.connections.used{*} / avg:postgresql.connections.max{*}',
+                threshold: '85',
+                warningThreshold: '70',
+                message: 'Database connection pool usage high',
+                tags: 'env:production, team:database, service:postgresql',
+                evaluationWindow: '5m',
+                notifyNoData: 'true',
+                renotifyInterval: '45',
+                escalationMessage: 'Connection pool saturated',
+                priority: 'P1'
+            }
+        ];
+        
+        renderMonitors();
+    }
+
+    function renderMonitors() {
+        const monitorsList = document.getElementById('monitorsList');
+        
+        if (monitors.length === 0) {
+            monitorsList.innerHTML = `
+                <div class="no-monitors">
+                    <div class="no-monitors-icon">📊</div>
+                    <h3>No Monitors Found</h3>
+                    <p>No monitors were found in your source platform</p>
+                </div>
+            `;
+            return;
+        }
+        
+        monitorsList.innerHTML = monitors.map(monitor => {
+            const fields = Object.entries(monitor).filter(([key]) => key !== 'id');
+            const displayFields = fields.slice(0, 4);
+            const hasMoreFields = fields.length > 4;
+            
+            return `
+                <div class="monitor-card selected" data-monitor-id="${monitor.id}">
+                    <div class="monitor-card-header">
+                        <div class="monitor-checkbox-wrapper">
+                            <input type="checkbox" class="monitor-checkbox monitor-select" checked onchange="handleMonitorSelect(this)">
+                        </div>
+                        <div class="monitor-card-title">
+                            <input type="text" value="${monitor.name}" data-field="name">
+                            <span class="monitor-type-badge">${monitor.type}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="monitor-fields ${hasMoreFields ? 'collapsed' : ''}" id="fields-${monitor.id}">
+                        ${fields.map(([key, value]) => {
+                            const isLongText = typeof value === 'string' && value.length > 50;
+                            const fieldClass = isLongText ? 'monitor-field full-width' : 'monitor-field';
+                            
+                            return `
+                                <div class="${fieldClass}">
+                                    <div class="monitor-field-label">${formatFieldName(key)}</div>
+                                    ${isLongText 
+                                        ? `<textarea data-field="${key}">${value}</textarea>`
+                                        : `<input type="text" value="${value}" data-field="${key}">`
+                                    }
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    ${hasMoreFields ? `
+                        <button class="expand-toggle" onclick="toggleMonitorFields('${monitor.id}')">
+                            <span class="expand-text">Show All Fields (${fields.length})</span>
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+        
+        updateMonitorCount();
+    }
+
+    function formatFieldName(fieldName) {
+        return fieldName
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase())
+            .trim();
+    }
+
+    function updateMonitorCount() {
+        const selected = document.querySelectorAll('.monitor-select:checked').length;
+        const total = monitors.length;
+        
+        document.getElementById('selectedCount').textContent = selected;
+        document.getElementById('totalCount').textContent = total;
+        
+        const selectAll = document.getElementById('selectAll');
+        if (selectAll) {
+            selectAll.checked = selected === total && total > 0;
+            selectAll.indeterminate = selected > 0 && selected < total;
+        }
+    }
+
+    // Global functions for onclick handlers
+    window.handleMonitorSelect = function(checkbox) {
+        const card = checkbox.closest('.monitor-card');
+        if (checkbox.checked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+        updateMonitorCount();
+    };
+
+    window.toggleMonitorFields = function(monitorId) {
+        const fieldsContainer = document.getElementById(`fields-${monitorId}`);
+        const button = fieldsContainer.nextElementSibling;
+        const expandText = button.querySelector('.expand-text');
+        
+        if (fieldsContainer.classList.contains('collapsed')) {
+            fieldsContainer.classList.remove('collapsed');
+            expandText.textContent = 'Show Less';
+        } else {
+            fieldsContainer.classList.add('collapsed');
+            const monitor = monitors.find(m => m.id === monitorId);
+            const fieldCount = Object.keys(monitor).length - 1;
+            expandText.textContent = `Show All Fields (${fieldCount})`;
+        }
+    };
+
+    function updateStepDisplay() {
+        document.querySelectorAll('.step-content').forEach(step => {
+            step.classList.remove('active');
+        });
+        
+        document.getElementById(`step${currentStep}`).classList.add('active');
+        
+        const progressSteps = document.querySelectorAll('.progress-step');
+        progressSteps.forEach((step, index) => {
+            step.classList.remove('active', 'completed');
+            if (index + 1 < currentStep) {
+                step.classList.add('completed');
+            } else if (index + 1 === currentStep) {
+                step.classList.add('active');
+            }
+        });
+        
+        const progressPercent = ((currentStep - 1) / 4) * 100;
+        document.getElementById('progressFill').style.width = progressPercent + '%';
+        
+        const titles = {
+            1: { title: 'Site24x7 Credentials', subtitle: 'Enter your Site24x7 API credentials to begin migration' },
+            2: { title: 'Select Source Vendor', subtitle: 'Choose the platform you want to migrate from' },
+            3: { title: 'Vendor Credentials', subtitle: 'Enter your ' + (selectedVendor || 'vendor') + ' credentials' },
+            4: { title: 'Review Monitors', subtitle: 'Select and edit monitors before migration' },
+            5: { title: 'Migration Complete', subtitle: 'Your monitors are being migrated' }
+        };
+        
+        document.getElementById('modalTitle').textContent = titles[currentStep].title;
+        document.getElementById('modalSubtitle').textContent = titles[currentStep].subtitle;
+        
+        if (currentStep === 5) {
+            nextBtn.style.display = 'none';
+            backBtn.style.display = 'none';
+        } else {
+            nextBtn.style.display = 'block';
+            backBtn.style.display = currentStep === 1 ? 'none' : 'block';
+        }
+    }
+
+    updateStepDisplay();
+</script>
+</body>
+</html>
