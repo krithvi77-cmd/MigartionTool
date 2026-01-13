@@ -8,10 +8,12 @@ import java.util.HashMap;
 
 public class AuthService {
 
-    public static String getSite24x7AccessToken(String clientId, String clientSecret, String refreshToken) throws Exception {
-        String url = "https://accounts.zoho.com/oauth/v2/token";
+    // ✅ FIXED: Added 'accountsUrl' as the first parameter
+    public static String getSite24x7AccessToken(String accountsUrl, String clientId, String clientSecret, String refreshToken) throws Exception {
+        
+        // ✅ FIXED: Use the dynamic URL from XML instead of hardcoding .in
+        String url = accountsUrl + "/oauth/v2/token";
 
-        // Wrap each variable in URLEncoder.encode to prevent "bad URL" errors
         String fullUrl = url + "?client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8)
                          + "&client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8)
                          + "&refresh_token=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)

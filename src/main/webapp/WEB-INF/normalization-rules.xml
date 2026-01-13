@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<normalization-rules>
+	<vendor name="datadog">
+		<api>https://api.us5.datadoghq.com/api/v1</api>
+
+		<Credentials>
+			<key label="DD-API-Key" id="DD-API-KEY" />
+			<key label="DD-APPLICATION-Key" id="DD-APPLICATION-KEY" />
+		</Credentials>
+		<monitors endpoint="/synthetics/tests" root-path="$.tests">
+			<monitor-type vendor-type="api"
+				framework-type="REST_API">
+				<field>
+					<normalized-name>monitor_name</normalized-name>
+					<source-jsonpath>$.name</source-jsonpath>
+				</field>
+				<field>
+					<normalized-name>monitor_url</normalized-name>
+					<source-jsonpath>$.config.request.url</source-jsonpath>
+				</field>
+				<field>
+					<normalized-name>method</normalized-name>
+					<source-jsonpath>$.config.request.method</source-jsonpath>
+				</field>
+				<field>
+					<normalized-name>frequency_seconds</normalized-name>
+					<source-jsonpath>$.options.tick_every</source-jsonpath>
+				</field>
+			</monitor-type>
+		</monitors>
+	</vendor>
+</normalization-rules>

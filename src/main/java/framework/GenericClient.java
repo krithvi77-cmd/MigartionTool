@@ -16,26 +16,28 @@ public class GenericClient {
      */
     public static String fetch(String url, Map<String, String> headers) throws Exception {
         HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(url)).GET();
-        
+
         if (headers != null) {
-            headers.forEach(builder::header);
+            headers.forEach((k, v) -> {
+                System.out.println("DEBUG Header: " + k + " = " + v);
+                builder.header(k, v);
+            });
         }
-        
+
         HttpResponse<String> response = client.send(builder.build(), HttpResponse.BodyHandlers.ofString());
         int statusCode = response.statusCode();
 
-        // Check for Authentication issues (Source or Target)
         if (statusCode == 401) {
-            throw new RuntimeException("UNAUTHORIZED"); 
+            throw new RuntimeException("UNAUTHORIZED");
         }
 
-        // Check for other API errors
         if (statusCode < 200 || statusCode >= 300) {
             throw new RuntimeException("API_ERROR_" + statusCode + ": " + response.body());
         }
-        
+
         return response.body();
     }
+
 
     /**
      * Standard POST for final Migration (creating monitors).

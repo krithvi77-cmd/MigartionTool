@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Gemini Migration Framework</title>
+<style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
+    input, select { display: block; width: 100%; margin: 10px 0; padding: 8px; }
+    button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+</style>
+</head>
+<body>
+    <h2>Vendor Migration Tool</h2>
+
+    <div class="card">
+        <h3>Step 1: Authenticate Site24x7</h3>
+        <input type="text" id="s247_client_id" placeholder="Client ID">
+        <input type="password" id="s247_secret" placeholder="Client Secret">
+        <input type="text" id="s247_refresh" placeholder="Refresh Token">
+        <button onclick="authenticate()">Connect Site24x7</button>
+        <p id="auth_status"></p>
+    </div>
+
+    <div class="card">
+        <h3>Step 2: Source Vendor Config</h3>
+        <select id="vendor_select" onchange="getRequirements()">
+            <option value="">Select Vendor</option>
+            <option value="datadog">Datadog</option>
+        </select>
+        <div id="dynamic_creds"></div>
+        <button onclick="fetchMonitors()">Preview Monitors</button>
+    </div>
+
+    <div class="card" id="preview_card" style="display: none;">
+        <h3>Step 3: Preview & Migrate</h3>
+        
+        <div style="margin-bottom: 15px; padding: 10px; background: #eee;">
+            <label><b>Select Location Profile:</b></label>
+            <select id="global_location_select"></select>
+
+            <label><b>Select Notification Profile:</b></label>
+            <select id="global_notification_select"></select>
+
+            <label><b>Select User Group:</b></label>
+            <select id="global_group_select"></select>
+        </div>
+
+        <table id="monitor_table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>URL</th>
+                    <th>Method</th>
+                    <th>Frequency (Min)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="monitor_body"></tbody>
+        </table>
+        <br>
+        <button style="background: #28a745;" onclick="migrateAll()">Migrate Selected</button>
+    </div>
+
+    <script>
+        let preparedMonitors = [];
+
+        async function authenticate() {
+            const res = await fetch('AuthSite24x7', {
+                method: 'POST',
+                body: JSON.stringify({
+                    client_id: document.getElementById('s247_client_id').value,
+                    client_secret: document.getElementById('s247_secret').value,
+                    refresh_token: document.getElementById('s247_refresh').value
+                })
+            });
+            const data = await res.json();
+            document.getElementById('auth_status').innerText = data.status || data.error;
+            if(data.status) document.getElementById('auth_status').style.color = "green";
+        }
+
+        async function getRequirements() {
+            const vendor = document.getElementById('vendor_select').value;
+            if(!vendor) return;
+            const res = await fetch('getvendorname', {
+                method: 'POST',
+                body: JSON.stringify({ vendor })
+            });
+            const fields = await res.json();
+            
+            if (fields.error) {
+                alert("Error: " + fields.error);
+                return;
+            }
+
+            const container = document.getElementById('dynamic_creds');
+            container.innerHTML = fields.map(f => `<input type="text" id="${f}" placeholder="${f}">`).join('');
+        }
+
+        async function fetchMonitors() {
+            const vendor = document.getElementById('vendor_select').value;
+            const payload = { vendor };
+            document.querySelectorAll('#dynamic_creds input').forEach(input => {
+                payload[input.id] = input.value;
+            });
+
+            const res = await fetch('FetchMonitors', { method: 'POST', body: JSON.stringify(payload) });
+            const data = await res.json();
+            
+            if (data.error) { 
+                alert("Fetch Error: " + data.error); 
+                return; 
+            }
+
+            const locSelect = document.getElementById('global_location_select');
+            if(data.locations) {
+                locSelect.innerHTML = data.locations.map(l => 
+                    `<option value="${l.profile_id}">${l.profile_name}</option>`
+                ).join('');
+            }
+
+            const notifSelect = document.getElementById('global_notification_select');
+            if(data.notifications) {
+                notifSelect.innerHTML = data.notifications.map(n => 
+                    `<option value="${n.profile_id}">${n.profile_name}</option>`
+                ).join('');
+            }
+
+            const groupSelect = document.getElementById('global_group_select');
+            if(data.groups) {
+                groupSelect.innerHTML = data.groups.map(g => 
+                    `<option value="${g.user_group_id}">${g.display_name}</option>`
+                ).join('');
+            }
+
+            preparedMonitors = data.monitors;
+            const tbody = document.getElementById('monitor_body');
+            tbody.innerHTML = preparedMonitors.map((m, i) => `
+                <tr>
+                    <td>${m.display_name}</td>
+                    <td>${m.website}</td>
+                    <td>${m.http_method}</td>
+                    <td>${m.check_frequency}</td>
+                    <td><input type="checkbox" checked class="mon-check" data-index="${i}"></td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('preview_card').style.display = 'block';
+        }
+
+        async function migrateAll() {
+            const selectedLocId = document.getElementById('global_location_select').value;
+            const selectedNotifId = document.getElementById('global_notification_select').value;
+            const selectedGroupId = document.getElementById('global_group_select').value;
+
+            const selected = [];
+            document.querySelectorAll('.mon-check:checked').forEach(cb => {
+                let monitor = preparedMonitors[cb.dataset.index];
+                
+                monitor.location_profile_id = selectedLocId; 
+                monitor.notification_profile_id = selectedNotifId; 
+                
+                monitor.user_group_ids = [selectedGroupId];
+
+                selected.push(monitor);
+            });
+
+            const res = await fetch('MigrateAction', { method: 'POST', body: JSON.stringify(selected) });
+            const results = await res.json();
+            alert("Migration Complete! Check console for results.");
+            console.table(results);
+        }
+    </script>
+</body>
+</html>

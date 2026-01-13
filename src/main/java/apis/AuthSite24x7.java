@@ -46,21 +46,36 @@ public class AuthSite24x7 extends HttpServlet {
 	    try {
 	        JSONObject input = parseRequest(request);
 	        
-	        // Validate the token via our AuthService
+	        // =================================================================================
+	        // ✅ STEP 1: LOAD DYNAMIC SETTINGS FROM XML
+	        // =================================================================================
+	        String mapXml = getServletContext().getRealPath("/WEB-INF/site24x7-mappings.xml");
+	        String accountsUrl = framework.XmlLoader.getSetting(mapXml, "accounts-url");
+
+	        // =================================================================================
+	        // ✅ STEP 2: PASS 4 PARAMETERS TO AUTH SERVICE (FIXES THE ERROR)
+	        // =================================================================================
 	        String token = AuthService.getSite24x7AccessToken(
+	            accountsUrl, // New parameter
 	            (String)input.get("client_id"), 
 	            (String)input.get("client_secret"), 
 	            (String)input.get("refresh_token")
 	        );
 
-	        // If valid, save the entire credential block to the Session
+	        // 2. Calculate Expiry (Current Time + 3600 seconds)
+	        long expiryTime = System.currentTimeMillis() + (3600 * 1000);
+
+	        // 3. Save everything to the Session
 	        HttpSession session = request.getSession();
+	        
 	        session.setAttribute("s247_creds", input); 
+	        session.setAttribute("s247_token", token);
+	        session.setAttribute("s247_token_expiry", expiryTime);
 	        
 	        response.getWriter().write("{\"status\":\"authenticated\"}");
 	    } catch (Exception e) {
 	        response.setStatus(401);
-	        response.getWriter().write("{\"error\":\"Invalid Site24x7 Credentials: " + e.getMessage() + "\"}");
+	        response.getWriter().write("{\"error\":\"Auth failed: " + e.getMessage().replace("\"", "'") + "\"}");
 	    }
 	}
 

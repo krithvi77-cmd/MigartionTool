@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site24x7-mappings>
+    <settings>
+         <base-url>https://www.site24x7.in/api</base-url>
+         <accounts-url>https://accounts.zoho.in</accounts-url>
+    </settings>
+    <monitors endpoint="/monitors">
     <monitor-type name="REST_API">
         
         <field target-field="display_name" type="single">
@@ -51,7 +56,7 @@
 
         <field target-field="threshold_profile_id" type="single">
             <resolve-by>api</resolve-by>
-            <lookup-endpoint response-path="$.data">/threshold_profiles/RESTAPI</lookup-endpoint>
+            <lookup-endpoint response-path="$.data">/threshold_profiles</lookup-endpoint>
             <match-on>type</match-on>
             <id-field>profile_id</id-field>
             <default-value>RESTAPI</default-value>
@@ -74,4 +79,5 @@
         </field>
 
     </monitor-type>
+    </monitors>
 </site24x7-mappings>

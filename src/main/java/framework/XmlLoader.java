@@ -113,20 +113,51 @@ public class XmlLoader {
     /**
      * Gets Source API and the JSON Root Path (e.g., "$.tests")
      */
+//    public static Map<String, String> getVendorMonitorConfig(String path, String vendorName) throws Exception {
+//        Map<String, String> config = new HashMap<>();
+//        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(path));
+//        NodeList vendors = doc.getElementsByTagName("vendor");
+//
+//        for (int i = 0; i < vendors.getLength(); i++) {
+//            Element v = (Element) vendors.item(i);
+//            if (v.getAttribute("name").equalsIgnoreCase(vendorName)) {
+//                Element monitors = (Element) v.getElementsByTagName("monitors").item(0);
+//                config.put("api", monitors.getAttribute("api"));
+//                // CRITICAL: Capture the root-path (e.g., "$.tests")
+//                config.put("rootPath", monitors.getAttribute("root-path"));
+//                break;
+//            }
+//        }
+//        return config;
+//    }
     public static Map<String, String> getVendorMonitorConfig(String path, String vendorName) throws Exception {
         Map<String, String> config = new HashMap<>();
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(path));
+
+        Document doc = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .parse(new File(path));
+        doc.getDocumentElement().normalize();
+
         NodeList vendors = doc.getElementsByTagName("vendor");
 
         for (int i = 0; i < vendors.getLength(); i++) {
             Element v = (Element) vendors.item(i);
-            if (v.getAttribute("name").equalsIgnoreCase(vendorName)) {
-                Element monitors = (Element) v.getElementsByTagName("monitors").item(0);
-                config.put("api", monitors.getAttribute("api"));
-                // CRITICAL: Capture the root-path (e.g., "$.tests")
-                config.put("rootPath", monitors.getAttribute("root-path"));
-                break;
+
+            if (!v.getAttribute("name").equalsIgnoreCase(vendorName)) continue;
+
+            // ✅ READ <api> ELEMENT (FIX)
+            Node apiNode = v.getElementsByTagName("api").item(0);
+            if (apiNode != null) {
+                config.put("api", apiNode.getTextContent().trim());
             }
+
+            // ✅ READ <monitors> ATTRIBUTES
+            Element monitors = (Element) v.getElementsByTagName("monitors").item(0);
+            if (monitors != null) {
+                config.put("endpoint", monitors.getAttribute("endpoint"));
+                config.put("rootPath", monitors.getAttribute("root-path"));
+            }
+            break;
         }
         return config;
     }
@@ -151,5 +182,18 @@ public class XmlLoader {
     private static String getTag(Element e, String tag) {
         NodeList nl = e.getElementsByTagName(tag);
         return (nl.getLength() > 0) ? nl.item(0).getTextContent().trim() : "";
+    }
+    /**
+     * Reads dynamic settings like base-url or accounts-url from the XML.
+     */
+    public static String getSetting(String path, String tagName) throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(path));
+        doc.getDocumentElement().normalize();
+        
+        NodeList settings = doc.getElementsByTagName(tagName);
+        if (settings.getLength() > 0) {
+            return settings.item(0).getTextContent().trim();
+        }
+        return ""; 
     }
 }
